@@ -12,6 +12,11 @@ void Int_Print(void* a, FILE* out)
 	fprintf(out, "%d ", *(int*)a);
 }
 
+void Int_Free(void* a)
+{
+	free(a);
+}
+
 void main()
 {
 	FILE* instructions = NULL, * output = NULL;
@@ -31,7 +36,7 @@ void main()
 			fscanf(instructions, "%d", &temp_key);
 			if ((key = (int*)malloc(sizeof(int))) == NULL)
 			{
-				// TODO: Free all program memory
+				FreeTree(tree, Int_Free);
 				ConsoleErrorMsg(ERROR_MEM_ALLOCATION_MSG);
 			}
 			*key = temp_key;
@@ -56,4 +61,5 @@ void main()
 
 	fclose(instructions);
 	fclose(output);
+	FreeTree(tree, Int_Free);
 }

@@ -25,7 +25,7 @@ bool AddTreeNode(PTree* tree, void* k, FILE* output, dim(*cmp)(void*, void*))
 
 	if ((NewNode = (PTree)malloc(sizeof(TreeNode))) == NULL)
 	{
-		// TODO: Free all program memory
+		//FreeTree(tree, Int_Free);
 		ConsoleErrorMsg(ERROR_MEM_ALLOCATION_MSG);
 	}
 
@@ -66,7 +66,7 @@ void PrintMaxKey(PTree tree, FILE* output, void(print)(void*, FILE*))
 {
 	if (tree == NULL)
 	{
-		fputs("No max key in your tree since its empty", output);
+		fputs("No max key in your tree since its empty\n", output);
 		return;
 	}
 
@@ -85,7 +85,7 @@ void PrintKMin(PTree tree, int k, FILE* output, void(print)(void*, FILE*))
 
 	if (k > count)
 	{
-		fprintf(output, "There are no %d elements in this tree", k);
+		fprintf(output, "There are no %d elements in this tree\n", k);
 		return;
 	}
 
@@ -100,6 +100,16 @@ void PrintKMin(PTree tree, int k, FILE* output, void(print)(void*, FILE*))
 		PrintKMin(tree, k - 1, output, print);
 	}
 	print(tree->Key, output);
+}
+
+void FreeTree(PTree tree, void(free_data)(void*))
+{
+	if (tree == NULL)
+		return;
+	FreeTree(tree->Left, free_data);
+	FreeTree(tree->Right, free_data);
+	free_data(tree->Key);
+	free(tree);
 }
 
 bool IsKeyExistsInTree(PTree tree, void* k, dim(*cmp)(void*, void*))
@@ -136,5 +146,5 @@ int CountTreeNodes(PTree tree)
 		return 0;
 	if (tree->Left == NULL && tree->Right == NULL)
 		return 1;
-	return CountTreeNodes(tree->Left) + CountTreeNodes(tree->Right);
+	return 1 + CountTreeNodes(tree->Left) + CountTreeNodes(tree->Right);
 }

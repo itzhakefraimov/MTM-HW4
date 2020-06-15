@@ -30,6 +30,7 @@ void PrintInorder(PTree tree, FILE* output, void(print)(void*, FILE*));
 void PrintTreeHeight(PTree tree, FILE* output);
 void PrintMaxKey(PTree tree, FILE* output, void(print)(void*, FILE*));
 void PrintKMin(PTree tree, int k, FILE* output, void(print)(void*, FILE*));
+void FreeTree(PTree tree, void(free_data)(void*));
 
 bool IsKeyExistsInTree(PTree tree, void* k, dim(*cmp)(void*, void*));
 PTree GetCorrectPos(PTree tree, void* k, dim(*cmp)(void*, void*));
