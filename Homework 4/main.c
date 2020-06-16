@@ -21,41 +21,41 @@ void main()
 {
 	FILE* instructions = NULL, * output = NULL;
 	PTree tree = NULL;
-	int instruction, temp_key, * key;
+	int instruction, temp_key, * key, count;
 
 	if (!(instructions = fopen(INSTRUCTIONS_FILE, "rt")))
 		ConsoleErrorMsg(ERROR_LOCATE_FILE_MSG);
 	if (!(output = fopen(OUTPUT_FILE, "wt")))
 		ConsoleErrorMsg(ERROR_LOCATE_FILE_MSG);
-
 	while (fscanf(instructions, "%d", &instruction) != EOF)
 	{
 		switch (instruction)
 		{
-		case 1:
-			fscanf(instructions, "%d", &temp_key);
-			if ((key = (int*)malloc(sizeof(int))) == NULL)
-			{
-				FreeTree(tree, Int_Free);
-				ConsoleErrorMsg(ERROR_MEM_ALLOCATION_MSG);
-			}
-			*key = temp_key;
-			if (AddTreeNode(&tree, key, output, Int_Cmp))
-				fprintf(output, "%d was added to the tree\n", *(int*)key);
-			break;
-		case 2:
-			PrintInorder(tree, output, Int_Print);
-			break;
-		case 3:
-			PrintTreeHeight(tree, output);
-			break;
-		case 4:
-			PrintMaxKey(tree, output, Int_Print);
-			break;
-		case 5:
-			fscanf(instructions, "%d", &temp_key);
-			PrintKMin(tree, temp_key, output, Int_Print);
-			break;
+			case 1:
+				fscanf(instructions, "%d", &temp_key);
+				if ((key = (int*)malloc(sizeof(int))) == NULL)
+				{
+					FreeTree(tree, Int_Free);
+					ConsoleErrorMsg(ERROR_MEM_ALLOCATION_MSG);
+				}
+				*key = temp_key;
+				if (AddTreeNode(&tree, key, output, Int_Cmp, Int_Free))
+					fprintf(output, "\n%d was added to the tree", *(int*)key);
+				break;
+			case 2:
+				PrintInorder(tree, output, Int_Print);
+				break;
+			case 3:
+				PrintTreeHeight(tree, output);
+				break;
+			case 4:
+				PrintMaxKey(tree, output, Int_Print);
+				break;
+			case 5:
+				fscanf(instructions, "%d", &temp_key);
+				count = 0;
+				PrintKMin(tree, temp_key, &count, CountTreeNodes(tree), output, Int_Print);
+				break;
 		}
 	}
 

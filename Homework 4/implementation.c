@@ -13,33 +13,31 @@ void ConsoleErrorMsg(const char* msg)
 	exit(EXIT_FAILURE);
 }
 
-bool AddTreeNode(PTree* tree, void* k, FILE* output, dim(*cmp)(void*, void*))
+bool AddTreeNode(PTree* tree, void* k, FILE* output, dim(*cmp)(void*, void*), void(free_data)(void*))
 {
 	PTree NewNode, Parent;
 
 	if (IsKeyExistsInTree(*tree, k, cmp))
 	{
-		fputs("Cannot add the same key twice\n", output);
+		fputs("\nCannot add the same key twice", output);
 		return false;
 	}
-
 	if ((NewNode = (PTree)malloc(sizeof(TreeNode))) == NULL)
 	{
-		//FreeTree(tree, Int_Free);
+		free(k);
+		FreeTree(*tree, free_data);
 		ConsoleErrorMsg(ERROR_MEM_ALLOCATION_MSG);
 	}
-
 	NewNode->Left = NULL;
 	NewNode->Right = NULL;
 	NewNode->Key = k;
-
 	/* if tree is empty, sets as first node */
 	if (*tree == NULL)
 	{
 		*tree = NewNode;
 		return true;
 	}
-
+	/* otherwise, gets the parent of the new node */
 	Parent = GetCorrectPos(*tree, NewNode->Key, cmp);
 	if (cmp(NewNode->Key, Parent->Key) == bigger)
 		Parent->Right = NewNode;
@@ -59,47 +57,40 @@ void PrintInorder(PTree tree, FILE* output, void(print)(void*, FILE*))
 
 void PrintTreeHeight(PTree tree, FILE* output)
 {
-	fprintf(output, "the height of your tree is %d\n", GetTreeHeight(tree));
+	fprintf(output, "\nthe height of your tree is %d", GetTreeHeight(tree));
 }
 
 void PrintMaxKey(PTree tree, FILE* output, void(print)(void*, FILE*))
 {
 	if (tree == NULL)
 	{
-		fputs("No max key in your tree since its empty\n", output);
+		fputs("\nNo max key in your tree since its empty", output);
 		return;
 	}
-
 	while (tree->Right != NULL)
 		tree = tree->Right;
-	fputs("The maximum is ", output);
+	fputs("\nThe maximum is ", output);
 	print(tree->Key, output);
-	fputs("\n", output);
 }
 
-void PrintKMin(PTree tree, int k, FILE* output, void(print)(void*, FILE*))
+void PrintKMin(PTree tree, int k, int* count, int count_nodes, FILE* output, void(print)(void*, FILE*))
 {
-	int count = CountTreeNodes(tree);
-	if (k < 1)
+	if (tree == NULL || *count >= k)
 		return;
-
-	if (k > count)
+	if (k > count_nodes)
 	{
-		fprintf(output, "There are no %d elements in this tree\n", k);
+		fprintf(output, "\nThere are no %d elements in this tree", k);
 		return;
 	}
-
-	if (tree->Left != NULL)
+	PrintKMin(tree->Left, k, count, count_nodes, output, print);
+	if (*count < k)
 	{
-		tree = tree->Left;
-		PrintKMin(tree, k - 1, output, print);
+		if (*count == 0)
+			fprintf(output, "\nThere are %d small elements in this tree: ", k);
+		(*count)++;
+		print(tree->Key, output);
 	}
-	if (tree->Right != NULL)
-	{
-		tree = tree->Right;
-		PrintKMin(tree, k - 1, output, print);
-	}
-	print(tree->Key, output);
+	PrintKMin(tree->Right, k, count, count_nodes, output, print);
 }
 
 void FreeTree(PTree tree, void(free_data)(void*))
@@ -123,11 +114,9 @@ bool IsKeyExistsInTree(PTree tree, void* k, dim(*cmp)(void*, void*))
 
 PTree GetCorrectPos(PTree tree, void* k, dim(*cmp)(void*, void*))
 {
-	if (tree->Left == NULL && cmp(k, tree->Key) == lower)
+	if (tree->Left == NULL && cmp(k, tree->Key) == lower || tree->Right == NULL && cmp(k, tree->Key) == bigger)
 		return tree;
-	if (tree->Right == NULL && cmp(k, tree->Key) == bigger)
-		return tree;
-	return GetCorrectPos(cmp(tree->Key, k) == bigger ? tree->Right : tree->Left, k, cmp);
+	return GetCorrectPos(cmp(k, tree->Key) == bigger ? tree->Right : tree->Left, k, cmp);
 }
 
 int GetTreeHeight(PTree tree)

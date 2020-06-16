@@ -1,8 +1,8 @@
-9 was added to the tree
-the height of your tree is 0
-3 was added to the tree
-20 was added to the tree
-1 was added to the tree
-The maximum is 20 
-There are no 2 elements in this tree
-3 
+
+the height of your tree is -1
+5 was added to the tree
+8 was added to the tree
+2 was added to the tree
+The maximum is 8 
+There are no 6 elements in this tree
+There are 2 small elements in this tree: 2 5 
