@@ -39,8 +39,7 @@ void main()
 					ConsoleErrorMsg(ERROR_MEM_ALLOCATION_MSG);
 				}
 				*key = temp_key;
-				if (AddTreeNode(&tree, key, output, Int_Cmp, Int_Free))
-					fprintf(output, "\n%d was added to the tree", *(int*)key);
+				AddTreeNode(&tree, key, output, Int_Print, Int_Cmp, Int_Free);
 				break;
 			case 2:
 				PrintInorder(tree, output, Int_Print);

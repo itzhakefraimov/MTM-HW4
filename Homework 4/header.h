@@ -25,7 +25,7 @@ typedef struct Tree* PTree;
  */
 void ConsoleErrorMsg(const char* msg);
 
-bool AddTreeNode(PTree* tree, void* k, FILE* output, dim(*cmp)(void*, void*), void(free_data)(void*));
+void AddTreeNode(PTree* tree, void* k, FILE* output, void(print)(void*, FILE*), dim(*cmp)(void*, void*), void(free_data)(void*));
 void PrintInorder(PTree tree, FILE* output, void(print)(void*, FILE*));
 void PrintTreeHeight(PTree tree, FILE* output);
 void PrintMaxKey(PTree tree, FILE* output, void(print)(void*, FILE*));

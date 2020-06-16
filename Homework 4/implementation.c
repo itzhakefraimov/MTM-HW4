@@ -13,14 +13,14 @@ void ConsoleErrorMsg(const char* msg)
 	exit(EXIT_FAILURE);
 }
 
-bool AddTreeNode(PTree* tree, void* k, FILE* output, dim(*cmp)(void*, void*), void(free_data)(void*))
+void AddTreeNode(PTree* tree, void* k, FILE* output, void(print)(void*, FILE*), dim(*cmp)(void*, void*), void(free_data)(void*))
 {
 	PTree NewNode, Parent;
 
 	if (IsKeyExistsInTree(*tree, k, cmp))
 	{
 		fputs("\nCannot add the same key twice", output);
-		return false;
+		return;
 	}
 	if ((NewNode = (PTree)malloc(sizeof(TreeNode))) == NULL)
 	{
@@ -33,17 +33,19 @@ bool AddTreeNode(PTree* tree, void* k, FILE* output, dim(*cmp)(void*, void*), vo
 	NewNode->Key = k;
 	/* if tree is empty, sets as first node */
 	if (*tree == NULL)
-	{
 		*tree = NewNode;
-		return true;
-	}
 	/* otherwise, gets the parent of the new node */
-	Parent = GetCorrectPos(*tree, NewNode->Key, cmp);
-	if (cmp(NewNode->Key, Parent->Key) == bigger)
-		Parent->Right = NewNode;
 	else
-		Parent->Left = NewNode;
-	return true;
+	{
+		Parent = GetCorrectPos(*tree, NewNode->Key, cmp);
+		if (cmp(NewNode->Key, Parent->Key) == bigger)
+			Parent->Right = NewNode;
+		else
+			Parent->Left = NewNode;
+	}
+	fputs("\n", output);
+	print(NewNode->Key, output);
+	fputs("was added to the tree", output);
 }
 
 void PrintInorder(PTree tree, FILE* output, void(print)(void*, FILE*))
