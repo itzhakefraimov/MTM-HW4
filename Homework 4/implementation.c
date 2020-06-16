@@ -133,7 +133,5 @@ int CountTreeNodes(PTree tree)
 {
 	if (tree == NULL)
 		return 0;
-	if (tree->Left == NULL && tree->Right == NULL)
-		return 1;
 	return 1 + CountTreeNodes(tree->Left) + CountTreeNodes(tree->Right);
 }
