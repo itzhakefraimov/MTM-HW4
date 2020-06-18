@@ -84,7 +84,9 @@ void PrintKMin(PTree tree, int k, int* count, int count_nodes, FILE* output, voi
 		fprintf(output, "\nThere are no %d elements in this tree", k);
 		return;
 	}
+	/* prints leftside, starting from the lowest (recursive) */
 	PrintKMin(tree->Left, k, count, count_nodes, output, print);
+	/* prints as long as the count of printed elements is less than k */
 	if (*count < k)
 	{
 		if (*count == 0)
@@ -92,6 +94,7 @@ void PrintKMin(PTree tree, int k, int* count, int count_nodes, FILE* output, voi
 		(*count)++;
 		print(tree->Key, output);
 	}
+	/* prints right side if there weren't enough smaller elements on the left branch */
 	PrintKMin(tree->Right, k, count, count_nodes, output, print);
 }
 
